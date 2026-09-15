@@ -5,9 +5,11 @@ export const TableSettings = ({
   setOpenTSettings,
   rowNum,
   colNum,
+  headerVal,
   colVal,
   setRowNum,
   setColNum,
+  setHeaderVal,
   setColVal,
 }: TableSettingType) => {
   const inputControl = () => {
@@ -15,6 +17,13 @@ export const TableSettings = ({
       console.log("enter a valid number");
       return;
     }
+    let hV:string
+    if (headerVal.trim() !== "") {
+      hV = headerVal;
+    } else {
+      hV = "null";
+    }
+    console.log(hV);
     console.log("row:", rowNum);
     console.log("col:", colNum);
     console.log("colVal:", colVal);
@@ -32,6 +41,22 @@ export const TableSettings = ({
       <p className="text-xl font-bold text-white shadow-2xl mt-3">
         Set your table!
       </p>
+      <div className="flex items-center gap-2">
+        <label htmlFor="rowNum" className="text-sm text-gray-200 w-16">
+          Header
+        </label>
+        <input
+          id="headerNum"
+          type="text"
+          name="headerNum"
+          placeholder="Header content"
+          onChange={(e) => {
+            const val = e.target.value;
+            setHeaderVal(val);
+          }}
+          className="border rounded px-2 py-1 w-full bg-black text-white text-sm"
+        />
+      </div>
       <div className="flex items-center gap-2">
         <label htmlFor="rowNum" className="text-sm text-gray-200 w-16">
           Row
