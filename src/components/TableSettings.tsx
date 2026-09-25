@@ -1,23 +1,33 @@
 import { X } from "lucide-react";
-import type { TableSettingType } from "../types/types";
+import type { SetTableConfig, SetTableProps } from "../types/types";
 
 export const TableSettings = ({
   setOpenTSettings,
-  rowNum,
-  colNum,
-  headerVal,
-  colVal,
-  setRowNum,
-  setColNum,
-  setHeaderVal,
-  setColVal,
-}: TableSettingType) => {
+  data,
+  setData,
+}: SetTableConfig) => {
+  /* const rowInt = Number(setTable.rowNum);
+  const colInt = Number(setTable.colNum); */
+  const rowNum = data.rowNum;
+  const colNum = data.colNum;
+  const headerVal = data.headerVal;
+  const colVal = data.colVal;
+  const updateData = <K extends keyof SetTableProps>( //tipleri kopyaladık, K ise bu tiplerden herhangi biri olabilir dedik. örn K burada o tip içindeki herhnagi bir değişkene eşit olabilir
+    key: K,
+    value: SetTableProps[K],
+  ) => {
+    setData((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
+
   const inputControl = () => {
     if (rowNum === "" || colNum === "" || rowNum <= 0 || colNum <= 0) {
       console.log("enter a valid number");
       return;
     }
-    let hV:string
+    let hV: string;
     if (headerVal.trim() !== "") {
       hV = headerVal;
     } else {
@@ -51,8 +61,12 @@ export const TableSettings = ({
           name="headerNum"
           placeholder="Header content"
           onChange={(e) => {
-            const val = e.target.value;
-            setHeaderVal(val);
+            const val = e.target.value; //setHeaderVal(val) eski hali
+            /* setData((prev) => ({
+              ...prev,
+              headerVal: val,
+            })); */
+            updateData("headerVal", val);
           }}
           className="border rounded px-2 py-1 w-full bg-black text-white text-sm"
         />
@@ -67,7 +81,12 @@ export const TableSettings = ({
           name="rowNum"
           onChange={(e) => {
             const val = e.target.value;
-            setRowNum(val === "" ? "" : Number(val));
+            //setRowNum(val === "" ? "" : Number(val));
+            /* setData((prev) => ({
+              ...prev,
+              rowNum: val === "" ? "" : Number(val),
+            })); */
+            updateData("rowNum", val === "" ? "" : Number(val));
           }}
           className="border rounded px-2 py-1 w-full bg-gray-800 text-white text-sm"
         />
@@ -82,7 +101,12 @@ export const TableSettings = ({
           name="colNum"
           onChange={(e) => {
             const val = e.target.value;
-            setColNum(val === "" ? "" : Number(val));
+            //setColNum(val === "" ? "" : Number(val));
+            /* setData((prev) => ({
+              ...prev,
+              colNum: val === "" ? "" : Number(val),
+            })); */
+            updateData("colNum", val === "" ? "" : Number(val));
           }}
           className="border rounded px-2 py-1 w-full bg-gray-800 text-white text-sm"
         />
@@ -96,7 +120,13 @@ export const TableSettings = ({
           type="text"
           name="valCol"
           onChange={(e) => {
-            setColVal(e.target.value);
+            //setColVal(e.target.value);
+            const val = e.target.value;
+            /* setData((prev) => ({
+              ...prev,
+              colVal: val,
+            })); */
+            updateData("colVal", val);
           }}
           className="border rounded px-2 py-1 w-full bg-gray-800 text-white text-sm"
         />
