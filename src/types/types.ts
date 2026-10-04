@@ -1,8 +1,9 @@
 import type { Dispatch, SetStateAction } from "react";
 
-export type TableStatus = "open" | "close" | "created"; //yeni tipler eklenecek
+export type TableStatus = "open" | "close" | "created" | "header"; //yeni tipler eklenecek
 
 export type TableSettingType = {
+  openTSetting: TableStatus;
   setOpenTSettings: React.Dispatch<React.SetStateAction<TableStatus>>;
   rowNum: number | "";
   colNum: number | "";
@@ -18,10 +19,11 @@ export type SetTableProps = {
   //setOpenTSettings: React.Dispatch<React.SetStateAction<TableStatus>>;
   rowNum: number | "";
   colNum: number | "";
-  headerVal: string;
+  headerVal: (string | number)[];
   colVal: string;
 };
 export type SetTableConfig = {
+  openTSettings: TableStatus;
   setOpenTSettings: React.Dispatch<React.SetStateAction<TableStatus>>;
   data: SetTableProps;
   setData: Dispatch<SetStateAction<TableConfig>>;
@@ -30,7 +32,7 @@ export type SetTableConfig = {
 export type TableProps = {
   rowNum: number | "";
   colNum: number | "";
-  headerVal: string;
+  headerVal: (string | number)[];
   colVal: string;
   //style?: string;
 };
@@ -38,6 +40,6 @@ export type TableProps = {
 export type TableConfig = {
   rowNum: number | "";
   colNum: number | "";
-  headerVal: string;
+  headerVal: (string | number)[];
   colVal: string;
 };

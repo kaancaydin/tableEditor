@@ -9,21 +9,22 @@ import { A4Preview } from "./components/A4Preview";
 
 function App() {
   const [openTSettings, setOpenTSettings] = useState<TableStatus>("close");
-  /*   const [rowNum, setRowNum] = useState<number | "">("");
+  /*   
+  const [rowNum, setRowNum] = useState<number | "">("");
   const [colNum, setColNum] = useState<number | "">("");
   const [headerVal, setHeaderVal] = useState<string>("");
-  const [colVal, setColVal] = useState<string>(""); */
+  const [colVal, setColVal] = useState<string>(""); 
+  */
   const [tableConfig, setTableConfig] = useState<TableConfig>({
     rowNum: "",
     colNum: "",
-    headerVal: "",
+    headerVal: [],
     colVal: "",
   });
   return (
     <>
       <Header />
       <div className={`flex items-center justify-center flex-col mt-20`}>
-        {" "}
         {/* NOT:mt-20 geçici eklendi, silinecek */}
         <button
           className="font-bold bg-blue-700 ring-2 ring-blue-500 text-white text-xl p-2 flex gap-0.5 
@@ -39,9 +40,10 @@ function App() {
         </button>
         <TurnToPdf />
         <div
-          className={`${openTSettings === "open" ? "flex font-titi" : "hidden"}`}
+          className={`${openTSettings === "created" || openTSettings == "close" ? "hidden" : "flex font-titi"}`} //eğer ayar kapatıldı ise ya da tablo oluşturuldu ise gizle
         >
           <TableSettings
+            openTSettings={openTSettings}
             setOpenTSettings={setOpenTSettings}
             data={tableConfig}
             setData={setTableConfig}
@@ -51,9 +53,7 @@ function App() {
           className={`${openTSettings === "created" ? "flex flex-col gap-2 items-center text-center font-manrope" : "hidden"}`}
         >
           <TableData data={tableConfig} />
-          <A4Preview
-            data={tableConfig}
-          />
+          <A4Preview data={tableConfig} />
         </div>
       </div>
     </>

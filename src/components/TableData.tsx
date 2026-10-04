@@ -5,6 +5,7 @@ export const TableData = ({ data }: { data: TableConfig }) => {
   const colInt = Number(data.colNum);
   const headerVal = data.headerVal;
   const colVal = data.colVal;
+
   return (
     <div>
       <table
@@ -39,15 +40,18 @@ export const TableData = ({ data }: { data: TableConfig }) => {
       </table>
 
       <table className="w-full border-collapse border border-gray-300">
-        {headerVal.trim() !== "" && (
+        {headerVal && (
           <thead>
             <tr className="bg-gray-100">
-              <th
-                className="border border-gray-300 px-4 py-2 text-center" //header şu anlık verilen satır değeri ile aynı sayıda ve hepsi birleşip tek satır oluyor
-                colSpan={colInt}
-              >
-                {headerVal}
-              </th>
+              {Array.from({ length: colInt }).map((_, colIndex) => (
+                <th
+                  key={colIndex}
+                  className="border border-gray-300 px-4 py-2 text-center" 
+                  //colSpan={colInt}
+                >
+                  {headerVal[colIndex]}
+                </th>
+              ))}
             </tr>
           </thead>
         )}
