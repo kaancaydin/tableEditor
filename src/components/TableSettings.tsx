@@ -1,5 +1,6 @@
 import { X } from "lucide-react";
 import type { SetTableConfig, SetTableProps } from "../types/types";
+import { useState } from "react";
 
 export const TableSettings = ({
   openTSettings,
@@ -7,8 +8,6 @@ export const TableSettings = ({
   data,
   setData,
 }: SetTableConfig) => {
-  /* const rowInt = Number(setTable.rowNum);
-  const colInt = Number(setTable.colNum); */
   const rowNum = data.rowNum;
   const colNum = data.colNum;
   const headerVal = data.headerVal;
@@ -22,127 +21,189 @@ export const TableSettings = ({
       [key]: value,
     }));
   };
-
+  const [isValid, setIsValid] = useState(true);
   const inputControl = () => {
     if (rowNum === "" || colNum === "" || rowNum <= 0 || colNum <= 0) {
       console.log("enter a valid number");
-      return;
+      setIsValid(false);
+      return false;
     }
-    //const headerControl =  headerVal.every(i => i.trim() !== "");
-    /* if (!headerControl) {
-      console.log("header cant be empty")
-    }  */
+    setIsValid(true);
+    return true;
     console.log("row:", rowNum);
     console.log("col:", colNum);
     console.log("colVal:", colVal);
     console.log("header values:", headerVal);
   };
+
+  let headText: string;
+  switch (openTSettings) {
+    case "header":
+      headText = "Define Your Headers";
+      break;
+    case "open":
+      headText = "Set Up Your Table!";
+      break;
+    default:
+      headText = "";
+  }
+
   return (
-    <div className="relative flex flex-col gap-3 p-5 bg-gray-700 rounded-3xl justify-center items-center backdrop-blur-xl">
-      <div className="absolute flex items-center  top-0 left-0 right-0 p-1 bg-gray-500 opacity-75 justify-between rounded-t-3xl">
-        <p className="pl-2 font-medium text-white">Settings</p>
-        <X
-          width={24}
-          className="cursor-pointer mr-1 hover:scale-105 duration-100 rounded-full hover:bg-red-900 text-red-700 hover:text-white transition-all"
-          onClick={() => setOpenTSettings("close")}
-        />
-      </div>
-      <p className="text-xl font-bold text-white shadow-2xl mt-3">
-        Set your table!
-      </p>
-      <div
-        className={`${openTSettings === "header" ? "flex flex-col items-center gap-2" : "hidden"}`}
-      >
-        {Array.from({ length: Number(colNum) }).map((_, colIndex) => (
-          <div className="" key={colIndex}>
-            <label htmlFor="headerVal" className="text-sm text-gray-200 w-16">
-              Header {colIndex + 1}
-            </label>
-            <input
-              id="headerNum"
-              type="text"
-              name="headerNum"
-              placeholder="Header content"
-              onChange={(e) => {
-                const val = e.target.value; //setHeaderVal(val)
-                updateData("headerVal", [
-                  ...headerVal.slice(0, colIndex),
-                  val,
-                  ...headerVal.slice(colIndex + 1),
-                ]);
-              }}
-              className="border rounded px-2 py-1 w-full bg-black text-white text-sm"
-            />
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/10 backdrop-blur-md">
+      <div className="relative w-[90%] max-w-md overflow-hidden rounded-2xl border border-gray-200 ring ring-gray-400 bg-[#F7F7F5] shadow-2xl">
+        <div className="flex h-10 items-center justify-between border-b border-gray-200 bg-[#ECECE9] px-3">
+          <p className="text-sm font-semibold text-gray-700">Settings</p>
+          <X
+            width={20}
+            className="cursor-pointer rounded-full p-0.5 text-gray-500 transition-all duration-150 hover:bg-red-500 hover:text-white"
+            onClick={() => setOpenTSettings("close")}
+          />
+        </div>
+
+        <div className="p-6">
+          <p className="text-center text-xl font-bold  text-gray-800">
+            {headText}
+          </p>
+
+          <div
+            className={
+              openTSettings === "header" ? "mt-5 flex flex-col gap-3" : "hidden"
+            }
+          >
+            {Array.from({ length: Number(colNum) }).map((_, colIndex) => (
+              <div key={colIndex} className="flex items-center gap-3">
+                <label
+                  htmlFor={`headerNum-${colIndex}`}
+                  className="w-20 text-sm font-medium text-gray-600"
+                >
+                  Header {colIndex + 1}
+                </label>
+
+                <input
+                  id={`headerNum-${colIndex}`}
+                  type="text"
+                  value={headerVal[colIndex] || ""}
+                  placeholder="Header content"
+                  onChange={(e) => {
+                    const val = e.target.value;
+
+                    updateData("headerVal", [
+                      ...headerVal.slice(0, colIndex),
+                      val,
+                      ...headerVal.slice(colIndex + 1),
+                    ]);
+                  }}
+                  className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                />
+              </div>
+            ))}
           </div>
-        ))}
+
+          <div
+            className={
+              openTSettings === "header" ? "hidden" : "mt-5 flex flex-col gap-3"
+            }
+          >
+            {/* Row */}
+            <div className="flex items-center gap-3">
+              <label
+                htmlFor="rowNum"
+                className="w-20 text-sm font-medium text-gray-600"
+              >
+                Row
+              </label>
+
+              <input
+                id="rowNum"
+                type="number"
+                value={rowNum}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  updateData("rowNum", val === "" ? "" : Number(val));
+                }}
+                className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+              />
+            </div>
+
+            {/* Column */}
+            <div className="flex items-center gap-3">
+              <label
+                htmlFor="colNum"
+                className="w-20 text-sm font-medium text-gray-600"
+              >
+                Column
+              </label>
+
+              <input
+                id="colNum"
+                type="number"
+                value={colNum}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  updateData("colNum", val === "" ? "" : Number(val));
+                }}
+                className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+              />
+            </div>
+
+            {/* Value */}
+            <div className="flex items-center gap-3">
+              <label
+                htmlFor="valCol"
+                className="w-20 text-sm font-medium text-gray-600"
+              >
+                Value
+              </label>
+
+              <input
+                id="valCol"
+                type="text"
+                value={colVal}
+                onChange={(e) => {
+                  setIsValid(true);
+                  updateData("colVal", e.target.value);
+                }}
+                className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+              />
+            </div>
+          </div>
+
+          {!isValid && (
+            <p className="mt-2 -mb-2 text-center text-sm font-semibold text-red-500">
+              Please fill in all required fields.
+            </p>
+          )}
+
+          <div className="mt-5 flex justify-center">
+            <button
+              onClick={() => {
+                if (!inputControl()) return;
+                setOpenTSettings("header");
+              }}
+              className={
+                openTSettings === "header"
+                  ? "hidden"
+                  : "w-full cursor-pointer rounded-lg bg-[#ce5e3c] px-4 py-2 font-semibold text-white shadow-sm transition hover:bg-[#9e300f]"
+              }
+            >
+              Header
+            </button>
+
+            <button
+              onClick={() => {
+                setOpenTSettings("created");
+              }}
+              className={
+                openTSettings === "header"
+                  ? "w-full cursor-pointer rounded-lg bg-[#46bb79] px-4 py-2 font-semibold text-white shadow-sm transition hover:bg-[#1bb362]"
+                  : "hidden"
+              }
+            >
+              Create
+            </button>
+          </div>
+        </div>
       </div>
-      <div
-        className={`${openTSettings === "header" ? "hidden" : "flex flex-col gap-2"}`}
-      >
-        <div className="flex items-center gap-2">
-          <label htmlFor="rowNum" className="text-sm text-gray-200 w-16">
-            Row
-          </label>
-          <input
-            id="rowNum"
-            type="number"
-            name="rowNum"
-            onChange={(e) => {
-              const val = e.target.value;
-              updateData("rowNum", val === "" ? "" : Number(val));
-            }}
-            className="border rounded px-2 py-1 w-full bg-gray-800 text-white text-sm"
-          />
-        </div>
-        <div className="flex items-center gap-2">
-          <label htmlFor="rowNum" className="text-sm text-gray-200 w-16">
-            Column
-          </label>
-          <input
-            id="colNum"
-            type="number"
-            name="colNum"
-            onChange={(e) => {
-              const val = e.target.value;
-              updateData("colNum", val === "" ? "" : Number(val));
-            }}
-            className="border rounded px-2 py-1 w-full bg-gray-800 text-white text-sm"
-          />
-        </div>
-        <div className="flex items-center gap-2">
-          <label htmlFor="valCol" className="text-sm text-gray-200 w-16">
-            Value
-          </label>
-          <input
-            id="valCol"
-            type="text"
-            name="valCol"
-            onChange={(e) => {
-              const val = e.target.value;
-              updateData("colVal", val);
-            }}
-            className="border rounded px-2 py-1 w-full bg-gray-800 text-white text-sm"
-          />
-        </div>
-      </div>
-      <button
-        onClick={() => {
-          inputControl();
-          setOpenTSettings("header");
-        }}
-        className={`${openTSettings === "header" ? "hidden" : "bg-red-400 ring-red-800 ring-2 p-2 rounded-2xl text-white font-bold text-base cursor-pointer w-[80%]"}`}
-      >
-        Header
-      </button>
-      <button
-        onClick={() => {
-          inputControl();
-          setOpenTSettings("created");
-        }}
-        className={`${openTSettings === "header" ? "bg-green-400 ring-green-800 ring-2 p-2 rounded-2xl text-white font-bold text-base cursor-pointer w-[80%]" : "hidden"}`}
-      >
-        Create
-      </button>
     </div>
   );
 };
