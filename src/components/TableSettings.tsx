@@ -1,6 +1,7 @@
 import { X } from "lucide-react";
 import type { SetTableConfig, SetTableProps } from "../types/types";
 import { useState } from "react";
+import { TablePreviewInSettings } from "./TablePreviewInSettings";
 
 export const TableSettings = ({
   openTSettings,
@@ -9,7 +10,9 @@ export const TableSettings = ({
   setData,
 }: SetTableConfig) => {
   const rowNum = data.rowNum;
+  const rowInt = Number(rowNum);
   const colNum = data.colNum;
+  const colInt = Number(colNum);
   const headerVal = data.headerVal;
   const colVal = data.colVal;
   const updateData = <K extends keyof SetTableProps>( //tipleri kopyaladık, K ise bu tiplerden herhangi biri olabilir dedik. örn K burada o tip içindeki herhnagi bir değişkene eşit olabilir
@@ -49,8 +52,8 @@ export const TableSettings = ({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/10 backdrop-blur-md">
-      <div className="relative w-[90%] max-w-md overflow-hidden rounded-2xl border border-gray-200 ring ring-gray-400 bg-[#F7F7F5] shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/10 backdrop-blur-md ">
+      <div className="relative w-[90%] max-w-md max-h-[90vh] overflow-y-auto scrollbar-none rounded-2xl border border-gray-200 ring ring-gray-400 bg-[#F7F7F5] shadow-2xl">
         <div className="flex h-10 items-center justify-between border-b border-gray-200 bg-[#ECECE9] px-3">
           <p className="text-sm font-semibold text-gray-700">Settings</p>
           <X
@@ -70,33 +73,38 @@ export const TableSettings = ({
               openTSettings === "header" ? "mt-5 flex flex-col gap-3" : "hidden"
             }
           >
-            {Array.from({ length: Number(colNum) }).map((_, colIndex) => (
-              <div key={colIndex} className="flex items-center gap-3">
-                <label
-                  htmlFor={`headerNum-${colIndex}`}
-                  className="w-20 text-sm font-medium text-gray-600"
-                >
-                  Header {colIndex + 1}
-                </label>
+            {Array.from({ length: Number(colNum) }).map(
+              (
+                _,
+                colIndex, //header input for values
+              ) => (
+                <div key={colIndex} className="flex items-center gap-3">
+                  <label
+                    htmlFor={`headerNum-${colIndex}`}
+                    className="w-20 text-sm font-medium text-gray-600"
+                  >
+                    Header {colIndex + 1}
+                  </label>
 
-                <input
-                  id={`headerNum-${colIndex}`}
-                  type="text"
-                  value={headerVal[colIndex] || ""}
-                  placeholder="Header content"
-                  onChange={(e) => {
-                    const val = e.target.value;
+                  <input
+                    id={`headerNum-${colIndex}`}
+                    type="text"
+                    value={headerVal[colIndex] || ""}
+                    placeholder="Header content"
+                    onChange={(e) => {
+                      const val = e.target.value;
 
-                    updateData("headerVal", [
-                      ...headerVal.slice(0, colIndex),
-                      val,
-                      ...headerVal.slice(colIndex + 1),
-                    ]);
-                  }}
-                  className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
-                />
-              </div>
-            ))}
+                      updateData("headerVal", [
+                        ...headerVal.slice(0, colIndex),
+                        val,
+                        ...headerVal.slice(colIndex + 1),
+                      ]);
+                    }}
+                    className="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                  />
+                </div>
+              ),
+            )}
           </div>
 
           <div
@@ -202,6 +210,15 @@ export const TableSettings = ({
               Create
             </button>
           </div>
+        </div>
+        <div
+          className={`mx-auto max-w-4xl p-4 font-sans text-sm select-none ${rowInt > 0 ? (colInt > 0 ? "block border-t" : "hidden") : "hidden"}`}
+        >
+          <TablePreviewInSettings
+            headerVal={headerVal}
+            colInt={colInt}
+            rowInt={rowInt}
+          />
         </div>
       </div>
     </div>
